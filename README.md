@@ -4,6 +4,11 @@ This is a stripped down fork of [ws-scrcpy](https://github.com/NetrisTV/ws-scrcp
 
 It does not require any _root_ access.
 
+## Why no video streaming?
+
+This project is used for controlling remote devices via [Repeato](https://www.repeato.app), a test automation tool for mobile Android and iOS Apps.
+Repeato uses a different kind of device video streaming implementation and so we didn't have a need for that. 
+
 ## How to build?
 
 See [BUILD].
