@@ -92,6 +92,7 @@ public class VideoSettings {
         this.bounds = new Size(width & ~15, height & ~15); // multiple of 16
     }
 
+
     public byte[] toByteArray() {
         // 35 bytes without codec options and encoder name
         int baseLength = 35;
@@ -186,9 +187,9 @@ public class VideoSettings {
                 byte[] textBuffer = new byte[codecOptionsLength];
                 data.get(textBuffer, 0, codecOptionsLength);
                 String codecOptions = new String(textBuffer, 0, codecOptionsLength, StandardCharsets.UTF_8);
-
             }
         }
+
 
         videoSettings.setBitRate(bitRate);
         videoSettings.setMaxFps(maxFps);

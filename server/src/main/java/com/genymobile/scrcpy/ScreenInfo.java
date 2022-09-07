@@ -9,6 +9,7 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+
 public final class ScreenInfo {
     private static String TAG = "scrcpy";
     /**
@@ -90,6 +91,8 @@ public final class ScreenInfo {
 
     public static ScreenInfo computeScreenInfo(DisplayInfo displayInfo, VideoSettings videoSettings) {
         int lockedVideoOrientation = videoSettings.getLockedVideoOrientation();
+        Rect crop = videoSettings.getCrop();
+
         int rotation = displayInfo.getRotation();
 
         if (lockedVideoOrientation == Device.LOCK_VIDEO_ORIENTATION_INITIAL) {
@@ -98,12 +101,59 @@ public final class ScreenInfo {
         }
 
         Size deviceSize = displayInfo.getSize();
-        Rect contentRect = new Rect(0, 0, deviceSize.getWidth(), deviceSize.getHeight());
+        Rect contentRect = new Rect(0, 0, deviceSize.getWidth(), deviceSize.getHeight());        
+    
+        if (crop != null) {
+            if (rotation % 2 != 0) { // 180s preserve dimensions
+                // the crop (provided by the user) is expressed in the natural orientation
+                crop = flipRect(crop);
+            }
+            if (!contentRect.intersect(crop)) {
+                // intersect() changes contentRect so that it is intersected with crop
+                Ln.w("Crop rectangle (" + formatCrop(crop) + ") does not intersect device screen (" + formatCrop(deviceSize.toRect()) + ")");
+                contentRect = new Rect(); // empty
+            }
+        }
 
-        Size videoSize = new Size(deviceSize.getWidth(), deviceSize.getHeight());
+        Size bounds = videoSettings.getBounds();
+        Size videoSize = computeVideoSize(contentRect.width(), contentRect.height(), bounds);
         return new ScreenInfo(contentRect, videoSize, rotation, lockedVideoOrientation);
     }
 
+    private static String formatCrop(Rect rect) {
+        return rect.width() + ":" + rect.height() + ":" + rect.left + ":" + rect.top;
+    }
+
+    private static Size computeVideoSize(int w, int h, Size bounds) {
+        if (bounds == null) {
+            w &= ~15; // in case it's not a multiple of 16
+            h &= ~15;
+            return new Size(w, h);
+        }
+        int boundsWidth = bounds.getWidth();
+        int boundsHeight = bounds.getHeight();
+        int scaledHeight;
+        int scaledWidth;
+        if (boundsWidth > w) {
+            scaledHeight = h;
+        } else {
+            scaledHeight = boundsWidth * h / w;
+        }
+        if (boundsHeight > scaledHeight) {
+            boundsHeight = scaledHeight;
+        }
+        if (boundsHeight == h) {
+            scaledWidth = w;
+        } else {
+            scaledWidth = boundsHeight * w / h;
+        }
+        if (boundsWidth > scaledWidth) {
+            boundsWidth = scaledWidth;
+        }
+        boundsWidth &= ~15;
+        boundsHeight &= ~15;
+        return new Size(boundsWidth, boundsHeight);
+    }
 
     private static Rect flipRect(Rect crop) {
         return new Rect(crop.top, crop.left, crop.bottom, crop.right);

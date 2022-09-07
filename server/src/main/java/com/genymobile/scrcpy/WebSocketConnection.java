@@ -135,7 +135,6 @@ public class WebSocketConnection extends Connection {
         }
 
 
-
         byte[] fullBytes = new byte[baseLength + additionalLength];
         ByteBuffer initialInfo = ByteBuffer.wrap(fullBytes);
         initialInfo.put(MAGIC_BYTES_INITIAL);

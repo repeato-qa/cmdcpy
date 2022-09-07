@@ -60,6 +60,7 @@ public final class Device {
     private IOnPrimaryClipChangedListener clipChangedListener;
 
     public Device(final Options options, final VideoSettings videoSettings) {
+
         displayId = videoSettings.getDisplayId();
         final DisplayInfo displayInfo = Device.getDisplayInfo(displayId);
         if (displayInfo == null) {
@@ -155,7 +156,9 @@ public final class Device {
 
         Size clientVideoSize = devicePosition.getScreenSize();
         if (!unlockedVideoSize.equals(clientVideoSize)) {
-            Ln.w("Sizes not equal! " + unlockedVideoSize + " " + clientVideoSize);
+            Ln.w(" the device may have been rotated");
+            Ln.i("client:" + clientVideoSize.getWidth()+" x "+clientVideoSize.getHeight());
+            Ln.i("unlocked:" + unlockedVideoSize.getWidth()+" x "+unlockedVideoSize.getHeight());
             // The client sends a click relative to a video with wrong dimensions,
             // the device may have been rotated since the event was generated, so ignore the event
             return null;

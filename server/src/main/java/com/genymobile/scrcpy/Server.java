@@ -86,7 +86,14 @@ public final class Server {
         boolean stayAwake = Boolean.parseBoolean(args[12]);
         options.setStayAwake(stayAwake);
 
-        boolean powerOffScreenOnClose = Boolean.parseBoolean(args[13]);
+        String codecOptions = args[13];
+        //options.setCodecOptions(codecOptions);
+        //videoSettings.setCodecOptions(codecOptions);
+
+        String encoderName = "-".equals(args[14]) ? null : args[14];
+        //videoSettings.setEncoderName(encoderName);
+
+        boolean powerOffScreenOnClose = Boolean.parseBoolean(args[15]);
         options.setPowerOffScreenOnClose(powerOffScreenOnClose);
     }
 
