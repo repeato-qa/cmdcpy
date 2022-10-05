@@ -5,6 +5,7 @@ import com.genymobile.scrcpy.DisplayInfo;
 import com.genymobile.scrcpy.Ln;
 import com.genymobile.scrcpy.Size;
 
+import android.os.Build;
 import android.os.IInterface;
 import android.view.Display;
 
@@ -40,12 +41,13 @@ public final class DisplayManager {
         Method method;
         String methodName = "getDisplayIds";
         try {
-            method = manager.getClass().getMethod(methodName);
-            return (int[]) method.invoke(manager);
-        } catch (NoSuchMethodException e) {
-            Ln.e("FIXME: Returning only default display.");
-            Ln.e("See https://github.com/NetrisTV/ws-scrcpy/issues/217");
-            return new int[]{Display.DEFAULT_DISPLAY};
+            if (Build.VERSION.SDK_INT < 33) {
+                method = manager.getClass().getMethod(methodName);
+                return (int[]) method.invoke(manager);
+            } else {
+                method = manager.getClass().getMethod(methodName, Boolean.TYPE);
+                return (int[]) method.invoke(manager, false);
+            }
         } catch (Exception e) {
             throw new AssertionError(e);
         }
