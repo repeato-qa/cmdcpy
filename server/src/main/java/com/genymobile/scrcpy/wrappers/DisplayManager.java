@@ -48,6 +48,11 @@ public final class DisplayManager {
                 method = manager.getClass().getMethod(methodName, Boolean.TYPE);
                 return (int[]) method.invoke(manager, false);
             }
+        } catch (NoSuchMethodException e) {
+            // happens on some AVDs, such as Pixel XL x86_64 API 33
+            Ln.e("FIXME: Returning only default display.");
+            Ln.e("See https://github.com/NetrisTV/ws-scrcpy/issues/217");
+            return new int[]{Display.DEFAULT_DISPLAY};
         } catch (Exception e) {
             throw new AssertionError(e);
         }
