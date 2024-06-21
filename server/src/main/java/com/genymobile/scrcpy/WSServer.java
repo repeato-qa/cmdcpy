@@ -1,5 +1,9 @@
 package com.genymobile.scrcpy;
 
+import android.view.inputmethod.ExtractedTextRequest;
+import android.view.inputmethod.InputConnection;
+import android.inputmethodservice.InputMethodService;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ClientHandshake;

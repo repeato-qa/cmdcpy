@@ -44,7 +44,7 @@ public final class Server {
 
         final int expectedParameters = 16;
         if (args.length != expectedParameters) {
-            throw new IllegalArgumentException("Expecting " + expectedParameters + " parameters");
+            throw new IllegalArgumentException("Expecting " + expectedParameters + " parameters, but received only " + args.length);
         }
 
         Ln.Level level = Ln.Level.valueOf(args[1].toUpperCase(Locale.ENGLISH));
